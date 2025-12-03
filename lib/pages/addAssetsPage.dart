@@ -1,0 +1,381 @@
+import 'dart:io';
+import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:Trove/components/textfields.dart';
+
+class Addassetspage extends StatefulWidget {
+
+  Addassetspage({super.key});
+
+  @override
+  State<Addassetspage> createState() => _AddassetspageState();
+}
+
+class _AddassetspageState extends State<Addassetspage> {
+
+  Future<void> addAssetToD() async{
+    String? base64Image;
+    if(selectedImage != null){
+      base64Image = await imageToBase64(selectedImage!);
+    }
+
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final data = {
+      'name' : AssetNameController.text.trim(),
+      'category' : selectedCategory,
+      'purchaseDate' : PurchaseDateController.text.trim(),
+      'expiryDate' : expiryDateController.text.trim(),
+      'price' : PriceController.text.trim(),
+      'serialNumber' : SerialNumberController.text.trim(),
+      'note' : NoteController.text.trim(),
+      'createdAt' : Timestamp.now(),
+      'base64Image': base64Image,
+    };
+
+    data.removeWhere((key, value) => value == null || value == "");
+    
+    await FirebaseFirestore.instance.collection('users').doc(uid).collection('assets').add(data);
+  }
+
+  String? selectedCategory;
+  TextEditingController AssetNameController = TextEditingController();
+  TextEditingController PurchaseDateController = TextEditingController();
+  TextEditingController PriceController = TextEditingController();
+  TextEditingController SerialNumberController = TextEditingController();
+  TextEditingController NoteController = TextEditingController();
+  TextEditingController expiryDateController = TextEditingController();
+
+
+  Future<void> selectDate(BuildContext context, TextEditingController controller)async{
+    DateTime? Picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2100),
+      builder: (context, child){
+          return Theme(
+              data: ThemeData.dark(),
+              child: child!
+          );
+      }
+    );
+
+    if(Picked != null){
+      setState(() {
+        controller.text = Picked.toString().split(" ")[0];
+      });
+    }
+  }
+
+  //Picking the images from gallery
+  File? selectedImage;
+  Future selectImage() async{
+    final picked = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+
+    if(picked != null){
+      setState(() {
+        selectedImage = File(picked.path);
+      });
+    }
+  }
+
+  //BASE64 LOGIC
+  Future<String> imageToBase64(File file) async{
+    final bytes = await file.readAsBytes();
+    return base64Encode(bytes);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xfffffff2),
+      appBar: AppBar(
+        backgroundColor: Color(0xfffffff2),
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          "Add New Asset",
+          style: GoogleFonts.martianMono(
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new, color: Colors.grey[700]),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 130,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[900],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.qr_code_scanner, color: Colors.white, size: 45),
+                      SizedBox(height: 5),
+                      Text(
+                        "Scan Barcode",
+                        style: GoogleFonts.montserratAlternates(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "Auto-fill product details",
+                        style: GoogleFonts.montserratAlternates(
+                          color: Colors.white70,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 30),
+                Text(
+                  "Asset Name*",
+                  style: GoogleFonts.montserratAlternates(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                  ),
+                ),
+                SizedBox(height: 8),
+                inputContainer(
+                  textEditingController: AssetNameController,
+                  hinttext: "e.g., MacBook Pro, Iphone 17",
+                ),
+                SizedBox(height: 15),
+                Text(
+                  "Category*",
+                  style: GoogleFonts.montserratAlternates(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Container(
+                  height: 60,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.black12),
+                  ),
+                  child: DropdownMenu(
+                    initialSelection: selectedCategory,
+                    onSelected: (value){
+                      setState(() {
+                        selectedCategory = value;
+                      });
+                    },
+                    enableSearch: true,
+                    enableFilter: true,
+                    hintText: "Select Category",
+                    width: double.infinity,
+                    textStyle: GoogleFonts.montserratAlternates(
+                      fontWeight: FontWeight.w600,
+                    ),
+
+                    dropdownMenuEntries: <DropdownMenuEntry<String>>[
+                      DropdownMenuEntry(value: "Electronics", label: "Electronic",),
+                      DropdownMenuEntry(value: "Appliances", label: "Appliances"),
+                      DropdownMenuEntry(value: "Furniture", label: "Furniture"),
+                      DropdownMenuEntry(value: "Documents", label: "Document"),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 15),
+                Text(
+                  "Purchase Date",
+                  style: GoogleFonts.montserratAlternates(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                  ),
+                ),
+                SizedBox(height: 8),
+                TextField(
+                  controller: PurchaseDateController,
+                  onTap: (){
+                    selectDate(context,PurchaseDateController);
+                  },
+                  style: GoogleFonts.martianMono(color: Colors.grey[700]),
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    prefixIcon: Icon(Icons.calendar_today_sharp, color: Colors.grey[700],),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.all(15),
+                    hintText: "Select Purchase Date",
+                    hintStyle: GoogleFonts.montserratAlternates(color: Colors.black38,fontSize: 16,fontWeight: FontWeight.bold),
+                  ),
+                  readOnly: true,
+                ),
+                SizedBox(height: 15),
+                Text(
+                  "Expiry Date",
+                  style: GoogleFonts.montserratAlternates(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                  ),
+                ),
+                SizedBox(height: 8),
+                TextField(
+                  controller: expiryDateController,
+                  onTap: (){
+                    selectDate(context,expiryDateController);
+                  },
+                  style: GoogleFonts.martianMono(color: Colors.grey[700]),
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    prefixIcon: Icon(Icons.calendar_today_sharp, color: Colors.grey[700],),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.all(15),
+                    hintText: "Select Expiry Date",
+                    hintStyle: GoogleFonts.montserratAlternates(color: Colors.black38,fontSize: 16,fontWeight: FontWeight.bold),
+                  ),
+                  readOnly: true,
+                ),
+                SizedBox(height: 15),
+                Text(
+                  "Purchase Price",
+                  style: GoogleFonts.montserratAlternates(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                  ),
+                ),
+                SizedBox(height: 8),
+                inputContainer(textEditingController: PriceController, hinttext: "e.g, 9999"),
+                SizedBox(height: 15),
+                Text(
+                  "Serial Number",
+                  style: GoogleFonts.montserratAlternates(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                  ),
+                ),
+                SizedBox(height: 8),
+                inputContainer(textEditingController: SerialNumberController, hinttext: "optional"),
+                SizedBox(height: 20),
+                GestureDetector(
+                  onTap: (){
+                    selectImage();
+                  },
+                  child: Container(
+                    height: 120,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(18),
+                      image: selectedImage != null ? DecorationImage(image: FileImage(selectedImage!),
+                          fit: BoxFit.fitHeight, alignment: Alignment.centerLeft) : null
+                    ),
+                    child: selectedImage == null ? Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        CircleAvatar(
+                          radius: 22,backgroundColor: Colors.grey[900],
+                          child: Icon(Icons.upload_file,color: Colors.grey,),
+                        ),
+                        Text("Click here to upload your image",style: GoogleFonts.montserratAlternates(
+                          fontWeight: FontWeight.w600,color: Colors.grey[700]
+                        ),)
+                      ],
+                    ) : Container(
+                      child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text("Image Selected ✔",style: GoogleFonts.montserratAlternates(fontWeight: FontWeight.bold),)),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Text(
+                  "Notes",
+                  style: GoogleFonts.montserratAlternates(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Container(
+                  height: 120,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: TextField(
+                    style: GoogleFonts.montserratAlternates(),
+                    controller: NoteController,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Additional Information...",
+                      hintStyle: GoogleFonts.montserratAlternates(
+                        fontWeight: FontWeight.bold,color: Colors.grey,
+                      ),
+                      contentPadding: EdgeInsets.all(12)
+                    ),
+                    maxLines: 3,
+                  ),
+                ),
+                SizedBox(height: 20),
+                Container(
+                  padding: EdgeInsets.all(6),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[900],
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: TextButton(
+                      onPressed: () async{
+                        if(AssetNameController.text.trim().isEmpty){
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:
+                          Text("Please enter asset name",style: GoogleFonts.montserratAlternates(fontWeight: FontWeight.bold),)));
+                          return;
+                        }
+                        if (selectedCategory == null || selectedCategory!.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Please select a category", style: GoogleFonts.montserratAlternates(fontWeight: FontWeight.bold),)),);
+                          return;
+                        }
+
+                        try{
+                          await addAssetToD();
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              backgroundColor: Colors.green[100],content:
+                          Text("Asset added successfully!",style: GoogleFonts.montserratAlternates(
+                            fontWeight: FontWeight.bold, color: Colors.grey[800]
+                          ),)));
+                          Navigator.pop(context);
+                        }catch(e){
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error: $e")));
+                        }
+                      }, child: Text("Save Asset",style: GoogleFonts.montserratAlternates(
+                    color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20
+                  ),)),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+  }
+}
