@@ -15,6 +15,12 @@ class Homepage extends ConsumerStatefulWidget {
 
 class _HomepageState extends ConsumerState<Homepage> {
   int currentIndex = 0;
+  final Screens = [
+    Homepage(),
+    Addassetspage(),
+    Profilepage(),
+  ];
+
 
   @override
   Widget build(BuildContext context) {
@@ -366,55 +372,6 @@ class _HomepageState extends ConsumerState<Homepage> {
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        elevation: 0,
-        onTap: (index) {
-          setState(() {
-            currentIndex = index;
-          });
-        },
-        backgroundColor: Colors.grey[900],
-        currentIndex: currentIndex,
-        iconSize: 25,
-        selectedItemColor: Color(0xfffffff2),
-        unselectedItemColor: Colors.grey[500],
-        selectedFontSize: 15,
-        unselectedLabelStyle: GoogleFonts.montserratAlternates(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-        ),
-        selectedLabelStyle: GoogleFonts.montserratAlternates(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: "Home"),
-          BottomNavigationBarItem(
-            icon: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Addassetspage()),
-                );
-              },
-              child: Icon(Icons.add),
-            ),
-            label: "Add",
-          ),
-          BottomNavigationBarItem(
-            icon: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Profilepage()),
-                );
-              },
-              child: Icon(Icons.person),
-            ),
-            label: "Profile",
-          ),
-        ],
       ),
     );
   }

@@ -53,7 +53,7 @@ class addAssetButton extends StatelessWidget {
       elevation: 0,
       child: Icon(Icons.add, color: Colors.white, size: 30),
       onPressed: () {
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => Addassetspage()),
         );

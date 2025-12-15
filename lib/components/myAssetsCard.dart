@@ -6,7 +6,6 @@ class MyAssetsCard extends StatelessWidget {
   final String name;
   final String categoryName;
   final String price;
-  final bool warranty;
   final String? purchaseDate;
   final String? expiryDate;
   final String? imageBase64;
@@ -15,7 +14,6 @@ class MyAssetsCard extends StatelessWidget {
     super.key,
     required this.name,
     required this.price,
-    required this.warranty,
     this.purchaseDate,
     this.expiryDate,
     required this.categoryName,
@@ -43,7 +41,7 @@ class MyAssetsCard extends StatelessWidget {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                icon: Icon(Icons.close),
+                icon: Icon(Icons.close,color: Colors.black,),
                 color: Colors.white54,
                 iconSize: 30,
               ),
@@ -56,11 +54,21 @@ class MyAssetsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int daysLeft = 0;
-    if (expiryDate != null) {
-      final parsed = DateTime.tryParse(expiryDate!);
-      if (parsed != null) {
-        daysLeft = parsed.difference(DateTime.now()).inDays;
+
+    bool warranty = false;
+
+    String warrantyStatus(DateTime? expiry) {
+      if (expiry == null) return "No warranty info";
+
+      final today = DateTime.now();
+      final diff = expiry.difference(today).inDays;
+
+      if (diff < 0) {
+        warranty = false;
+        return "Warranty expired ${diff.abs()} days ago";
+      } else {
+        warranty = true;
+        return "$diff days left for warranty";
       }
     }
 
@@ -154,11 +162,9 @@ class MyAssetsCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    warranty
-                        ? "Warranty: $daysLeft days left"
-                        : "Warranty Expired",
+                    warrantyStatus(DateTime.tryParse(expiryDate!)),
                     style: GoogleFonts.montserratAlternates(
-                      color: warranty ? Colors.green : Colors.red[900],
+                      color: warranty ? Colors.green : Colors.red.withOpacity(0.8),
                       fontWeight: FontWeight.w600,
                       wordSpacing: 2,
                       letterSpacing: 1,

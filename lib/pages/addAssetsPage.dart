@@ -1,11 +1,14 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:Trove/pages/BarcodeScannerPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:Trove/components/textfields.dart';
+import 'package:http/http.dart' as http;
 
 class Addassetspage extends StatefulWidget {
 
@@ -89,11 +92,87 @@ class _AddassetspageState extends State<Addassetspage> {
     return base64Encode(bytes);
   }
 
+  String scanBarcodeResult = "";
+  Future<void> scanAsset() async{
+    final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => Barcodescannerpage(),));
+    if(result == null) return;
+    setState(() {
+      scanBarcodeResult = result;
+    });
+    final mockData = getMockProductData(result);
+
+    if (mockData != null) {
+      setState(() {
+        AssetNameController.text = mockData['name'] ?? '';
+        NoteController.text = mockData['description'] ?? '';
+        selectedCategory = mockData['category'] ?? selectedCategory;
+        PriceController.text = mockData['price'] ?? '';
+        SerialNumberController.text = mockData['serial'] ?? '';
+        expiryDateController.text = mockData['expiry'] ?? '';
+      });
+    }
+  }
+
+  Future<Map<String, dynamic>?> fetchDataFromAPI(String barcode) async{
+    final url = Uri.parse(
+      'https://api.upcitemdb.com/prod/trial/lookup?upc=$barcode',
+    );
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Accept': 'application/json'
+      },
+    );
+    print("UPC RESPONSE: ${response.body}");
+
+    if(response.statusCode != 200) return null;
+
+    final data = json.decode(response.body);
+    if (data['items'] == null || data['items'].isEmpty) return null;
+
+    final item = data['items'][0];
+
+    return{
+      'name': item['title'] ?? "",
+      'description': item['description'] ?? "",
+      'category': item['category'] ?? "",
+      'price': item['price'] ?? "",
+      'image': item['images']?.first ?? "",
+    };
+  }
+
+  Map<String, String>? getMockProductData(String barcode) {
+    if (barcode == '012345678905') {
+      return {
+        'name': 'Apple iPhone 13',
+        'category': 'Electronics',
+        'description': '128GB, Midnight Black',
+        'price': '60000',
+        'serial': '10023456'
+      };
+    }
+    if (barcode == '123456789') {
+      return {
+        'name': 'Samsung Fridge',
+        'category': 'Electronics',
+        'description': 'Samsung 419 L, 3 Star, Convertible 5-in-1, Digital Inverter, Frost Free Double Door',
+        'price': '120000',
+        'serial': '12345678',
+        'expiry': '10-10-2030',
+      };
+    }
+
+    return null; // no mock data
+  }
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Color(0xfffffff2),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Color(0xfffffff2),
         elevation: 0,
         centerTitle: true,
@@ -104,10 +183,6 @@ class _AddassetspageState extends State<Addassetspage> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: Colors.grey[700]),
-          onPressed: () => Navigator.pop(context),
-        ),
       ),
       body: SafeArea(
         child: Padding(
@@ -116,37 +191,54 @@ class _AddassetspageState extends State<Addassetspage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  height: 130,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[900],
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.qr_code_scanner, color: Colors.white, size: 45),
-                      SizedBox(height: 5),
-                      Text(
-                        "Scan Barcode",
-                        style: GoogleFonts.montserratAlternates(
+                GestureDetector(
+                  onTap: () async{
+                    await scanAsset();
+                    print(scanBarcodeResult);
+                  },
+                  child: Container(
+                    height: 130,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[900],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.qr_code_scanner,
                           color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                          size: 45,
                         ),
-                      ),
-                      Text(
-                        "Auto-fill product details",
-                        style: GoogleFonts.montserratAlternates(
-                          color: Colors.white70,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                        const SizedBox(height: 6),
+                        Text(
+                          scanBarcodeResult.isEmpty
+                              ? "Scan Barcode"
+                              : "Barcode Attached",
+                          style: GoogleFonts.montserratAlternates(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ],
+
+                        if (scanBarcodeResult.isEmpty) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            "Auto-fill product details",
+                            style: GoogleFonts.montserratAlternates(
+                              color: Colors.white70,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ]
+                      ],
+                    ),
                   ),
                 ),
+
                 SizedBox(height: 30),
                 Text(
                   "Asset Name*",

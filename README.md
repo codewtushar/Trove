@@ -229,7 +229,7 @@ copies or substantial portions of the Software.
 
 If you find this project helpful, please give it a ⭐️!
 
-[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/trove&type=Date)](https://star-history.com/#yourusername/trove&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=codewtushar/trove&type=Date)](https://star-history.com/#codewtushar/trove&Date)
 
 ---
 
@@ -239,7 +239,7 @@ If you find this project helpful, please give it a ⭐️!
 
 *"One scan. One place. All your valuables."*
 
-[Report Bug](https://github.com/yourusername/trove/issues) · [Request Feature](https://github.com/yourusername/trove/issues) · [View Demo](#)
+[Report Bug](https://github.com/codewtushar/trove/issues) · [Request Feature](https://github.com/codewtushar/trove/issues) · [View Demo](#)
 
 </div>
 

@@ -1,3 +1,4 @@
+import 'package:Trove/MainNavigationPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -56,6 +57,7 @@ class loginPage extends ConsumerWidget {
                 ),
               ),
             ),
+            SizedBox(height: 10,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
               child: Container(
@@ -109,7 +111,7 @@ class loginPage extends ConsumerWidget {
 
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => Homepage()),
+                      MaterialPageRoute(builder: (context) => MainNavigationPage()),
                     );
                   } on FirebaseAuthException catch (e) {
                     String message = "";
