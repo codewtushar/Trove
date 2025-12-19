@@ -34,15 +34,12 @@ class MyAssetsPage extends ConsumerWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MainNavigationPage()),
-            );
-          },
+        leading: Navigator.canPop(context)
+            ? IconButton(
           icon: Icon(Icons.arrow_back_ios_new, color: Colors.grey[700]),
-        ),
+          onPressed: () => Navigator.pop(context),
+        )
+            : null,
       ),
       body: SafeArea(
         child: Padding(

@@ -20,6 +20,11 @@ class Addassetspage extends StatefulWidget {
 
 class _AddassetspageState extends State<Addassetspage> {
 
+  var categories = [
+    "Electronics", "Appliances", "Furniture", "Documents"
+  ];
+  String selectedCategory = "Select Category";
+
   Future<void> addAssetToD() async{
     String? base64Image;
     if(selectedImage != null){
@@ -44,7 +49,7 @@ class _AddassetspageState extends State<Addassetspage> {
     await FirebaseFirestore.instance.collection('users').doc(uid).collection('assets').add(data);
   }
 
-  String? selectedCategory;
+
   TextEditingController AssetNameController = TextEditingController();
   TextEditingController PurchaseDateController = TextEditingController();
   TextEditingController PriceController = TextEditingController();
@@ -172,10 +177,12 @@ class _AddassetspageState extends State<Addassetspage> {
     return Scaffold(
       backgroundColor: Color(0xfffffff2),
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         backgroundColor: Color(0xfffffff2),
         elevation: 0,
         centerTitle: true,
+        leading: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: Icon(Icons.arrow_back_ios_new)),
         title: Text(
           "Add New Asset",
           style: GoogleFonts.martianMono(
@@ -269,29 +276,48 @@ class _AddassetspageState extends State<Addassetspage> {
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: Colors.black12),
                   ),
-                  child: DropdownMenu(
-                    initialSelection: selectedCategory,
-                    onSelected: (value){
-                      setState(() {
-                        selectedCategory = value;
-                      });
-                    },
-                    enableSearch: true,
-                    enableFilter: true,
-                    hintText: "Select Category",
-                    width: double.infinity,
-                    textStyle: GoogleFonts.montserratAlternates(
-                      fontWeight: FontWeight.w600,
-                    ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        value: categories.contains(selectedCategory)
+                            ? selectedCategory
+                            : null,
+                        hint: Text(
+                          selectedCategory,
+                          style: GoogleFonts.montserratAlternates(
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                        style: GoogleFonts.montserratAlternates(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black54,fontSize: 18
+                        ),
+                        icon: const Icon(Icons.keyboard_arrow_down_outlined),
+                        dropdownColor: Color(0xfffffff2),
+                        items: categories
+                            .map(
+                              (e) => DropdownMenuItem<String>(
+                            value: e,
+                            child: Text(e),
+                          ),
+                        )
+                            .toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedCategory = value!;
+                          });
+                        },
+                      ),
+                    )
 
-                    dropdownMenuEntries: <DropdownMenuEntry<String>>[
-                      DropdownMenuEntry(value: "Electronics", label: "Electronic",),
-                      DropdownMenuEntry(value: "Appliances", label: "Appliances"),
-                      DropdownMenuEntry(value: "Furniture", label: "Furniture"),
-                      DropdownMenuEntry(value: "Documents", label: "Document"),
-                    ],
                   ),
+
                 ),
+
                 SizedBox(height: 15),
                 Text(
                   "Purchase Date",
@@ -441,7 +467,7 @@ class _AddassetspageState extends State<Addassetspage> {
                           Text("Please enter asset name",style: GoogleFonts.montserratAlternates(fontWeight: FontWeight.bold),)));
                           return;
                         }
-                        if (selectedCategory == null || selectedCategory!.isEmpty) {
+                        if (selectedCategory == null || selectedCategory!.isEmpty || selectedCategory == "Select Category") {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("Please select a category", style: GoogleFonts.montserratAlternates(fontWeight: FontWeight.bold),)),);
                           return;
