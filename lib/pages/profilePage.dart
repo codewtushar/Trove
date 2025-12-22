@@ -1,4 +1,5 @@
 import 'package:Trove/components/custom_dialog.dart';
+import 'package:Trove/pages/settings_section/editProfilePage.dart';
 import 'package:Trove/pages/settings_section/faq_page.dart';
 import 'package:Trove/pages/settings_section/help_support_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -247,24 +248,29 @@ class _ProfilepageState extends ConsumerState<Profilepage> {
                           horizontal: 15.0,
                           vertical: 15,
                         ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.edit, color: Colors.white70),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                "Edit Profile",
-                                style: GoogleFonts.montserratAlternates(
-                                  fontSize: 18,
-                                  color: Colors.white70,
+                        child: GestureDetector(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => Editprofilepage(),));
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.edit, color: Colors.white70),
+                              SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  "Edit Profile",
+                                  style: GoogleFonts.montserratAlternates(
+                                    fontSize: 18,
+                                    color: Colors.white70,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              color: Colors.white70,
-                            ),
-                          ],
+                              Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                color: Colors.white70,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       Padding(

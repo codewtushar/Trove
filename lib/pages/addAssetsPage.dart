@@ -408,8 +408,8 @@ class _AddassetspageState extends State<Addassetspage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         CircleAvatar(
-                          radius: 22,backgroundColor: Colors.grey[900],
-                          child: Icon(Icons.upload_file,color: Colors.grey,),
+                          radius: 24,backgroundColor: Colors.grey[900],
+                          child: Icon(Icons.upload_file,color: Colors.white70,),
                         ),
                         Text("Click here to upload your image",style: GoogleFonts.montserratAlternates(
                           fontWeight: FontWeight.w600,color: Colors.grey[700]

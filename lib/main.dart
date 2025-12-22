@@ -1,6 +1,10 @@
+import 'dart:math';
+
+import 'package:Trove/MainNavigationPage.dart';
 import 'package:Trove/pages/assetDetailPage.dart';
 import 'package:Trove/pages/homePage.dart';
 import 'package:Trove/pages/logInPage.dart';
+import 'package:Trove/pages/profilePage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,7 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: loginPage(),
+      home: MainNavigationPage(),
     );
   }
 }

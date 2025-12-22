@@ -31,6 +31,7 @@ class Signuppage extends StatelessWidget {
          'Last name': LastNameController.text.trim(),
          'Age': ageController.text.trim(),
          'Email': emailController.text.trim(),
+         'Password': passController.text.trim(),
          'CreatedAt': DateTime.now(),
        });
 
@@ -90,7 +91,7 @@ class Signuppage extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(12.0),
-              child: inputContainer(textEditingController: passController, hinttext: "Password",),
+              child: inputContainer(textEditingController: passController, hinttext: "Password",ispassword: true,),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0,vertical: 30),
