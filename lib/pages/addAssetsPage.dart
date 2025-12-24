@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:Trove/MainNavigationPage.dart';
 import 'package:Trove/pages/BarcodeScannerPage.dart';
+import 'package:Trove/pages/homePage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,12 +28,17 @@ class _AddassetspageState extends State<Addassetspage> {
   String selectedCategory = "Select Category";
 
   Future<void> addAssetToD() async{
+    final user = FirebaseAuth.instance.currentUser;
+    if(user == null){
+      throw Exception("User not logged in");
+    }
+    final uid = user.uid;
+
     String? base64Image;
     if(selectedImage != null){
       base64Image = await imageToBase64(selectedImage!);
     }
 
-    final uid = FirebaseAuth.instance.currentUser!.uid;
     final data = {
       'name' : AssetNameController.text.trim(),
       'category' : selectedCategory,
@@ -462,12 +469,13 @@ class _AddassetspageState extends State<Addassetspage> {
                   ),
                   child: TextButton(
                       onPressed: () async{
+
                         if(AssetNameController.text.trim().isEmpty){
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:
                           Text("Please enter asset name",style: GoogleFonts.montserratAlternates(fontWeight: FontWeight.bold),)));
                           return;
                         }
-                        if (selectedCategory == null || selectedCategory!.isEmpty || selectedCategory == "Select Category") {
+                        if (selectedCategory == "Select Category") {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("Please select a category", style: GoogleFonts.montserratAlternates(fontWeight: FontWeight.bold),)),);
                           return;
@@ -476,11 +484,12 @@ class _AddassetspageState extends State<Addassetspage> {
                         try{
                           await addAssetToD();
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              backgroundColor: Colors.green[100],content:
-                          Text("Asset added successfully!",style: GoogleFonts.montserratAlternates(
-                            fontWeight: FontWeight.bold, color: Colors.grey[800]
+                              backgroundColor: Colors.green,content:
+                          Text("Asset added successfully!",style: GoogleFonts.martianMono(
+                            fontWeight: FontWeight.bold,
                           ),)));
-                          Navigator.pop(context);
+                          if(!mounted) return;
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => MainNavigationPage(),));
                         }catch(e){
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error: $e")));
                         }

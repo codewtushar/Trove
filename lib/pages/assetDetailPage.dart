@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:Trove/pages/editAsseetPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -317,16 +318,24 @@ class Assetdetailpage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(width: 15),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          vertical: 20,
-                          horizontal: 15,
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => Editasseepage(
+                            docID: docID,existingCat: category,existingname: name,
+                            existingexpiry: expiryDays,existingnote: note,existingprice: price,existingserial: serialNumber,
+                          ),));
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 20,
+                            horizontal: 15,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.grey.withOpacity(0.1),
+                          ),
+                          child: Icon(Icons.edit, color: Colors.green, size: 30),
                         ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Colors.grey.withOpacity(0.1),
-                        ),
-                        child: Icon(Icons.edit, color: Colors.green, size: 30),
                       ),
                     ],
                   ),

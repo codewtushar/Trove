@@ -63,6 +63,7 @@ class _ProfilepageState extends ConsumerState<Profilepage> {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
+                        backgroundColor: notificationsEnabled ? Colors.green : null,
                         content: Text(
                           notificationsEnabled
                               ? "Notifications enabled"

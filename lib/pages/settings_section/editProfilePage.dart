@@ -1,4 +1,6 @@
+import 'package:Trove/MainNavigationPage.dart';
 import 'package:Trove/components/textfields.dart';
+import 'package:Trove/pages/homePage.dart';
 import 'package:Trove/provider_services/firebase_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -117,7 +119,7 @@ class _EditprofilepageState extends ConsumerState<Editprofilepage> {
                           SizedBox(height: 80),
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 15.0,
+                              horizontal: 10.0,
                             ),
                             child: Container(
                               padding: EdgeInsets.all(4),
