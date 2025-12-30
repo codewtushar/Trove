@@ -67,6 +67,24 @@ class Signuppage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Container(
+              padding: EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(25),
+                  border: Border.all(
+                      color: Colors.black.withOpacity(0.3)
+                  )
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image(
+                  image: AssetImage('lib/assets/images/logo.png'),
+                  width: 75,
+                ),
+              ),
+            ),
+            SizedBox(height: 15,),
             Text("HELLO AGAIN",style: GoogleFonts.belleza(
                 fontSize: 40,fontWeight: FontWeight.bold
             ),),

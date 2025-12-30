@@ -21,10 +21,21 @@ class loginPage extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ClipRRect(
-              child: Image(
-                image: AssetImage('lib/assets/images/logo.png'),
-                width: 150,
+            Container(
+              padding: EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(25),
+                border: Border.all(
+                  color: Colors.black.withOpacity(0.3)
+                )
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image(
+                  image: AssetImage('lib/assets/images/logo.png'),
+                  width: 130,
+                ),
               ),
             ),
             SizedBox(height: 50),
