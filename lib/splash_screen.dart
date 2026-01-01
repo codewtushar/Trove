@@ -1,5 +1,9 @@
 import 'dart:async';
+import 'package:Trove/MainNavigationPage.dart';
+import 'package:Trove/pages/homePage.dart';
 import 'package:Trove/pages/logInPage.dart';
+import 'package:Trove/pages/signUpPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -8,6 +12,7 @@ class SplashScreen extends StatefulWidget {
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
+
 }
 
 class _SplashScreenState extends State<SplashScreen>
@@ -25,6 +30,8 @@ class _SplashScreenState extends State<SplashScreen>
   Timer? _typingTimer;
   bool _cursorVisible = true;
   Timer? _cursorBlinkTimer;
+
+  final user = FirebaseAuth.instance.currentUser;
 
   void startTypeWriter() {
     _typingTimer = Timer.periodic(const Duration(milliseconds: 180), (timer) {
@@ -52,7 +59,7 @@ class _SplashScreenState extends State<SplashScreen>
           if (!mounted) return;
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const loginPage()),
+            MaterialPageRoute(builder: (context) => user != null ? MainNavigationPage() : loginPage()),
           );
         });
       }
