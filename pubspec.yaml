@@ -46,6 +46,19 @@ dependencies:
   url_launcher: ^6.1.14
   intl: ^0.20.2
 
+  flutter_native_splash: ^2.4.7
+
+flutter_native_splash:
+  color: "#fffff2"
+  color_dark: "#0A0A0A"
+  image: lib/assets/images/transparent.png
+
+  android_12:
+    color: "#fffff2"
+    color_dark: "#0A0A0A"
+    image: lib/assets/images/transparent.png
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -66,7 +66,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                   );
                 },
                 error: (err, _) => Text("Error loading user"),
-                loading: () => CircularProgressIndicator(),
+                loading: () => CircularProgressIndicator(color: Colors.white,),
               ),
               SizedBox(height: 5),
               Text(
@@ -112,7 +112,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                             ],
                           ),
                           error: (error,_) => Text("Error, $error"),
-                          loading: () => CircularProgressIndicator(),
+                          loading: () => CircularProgressIndicator(color: Colors.white,),
                       )
                     ),
                   ),
@@ -149,7 +149,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                             ],
                           ),
                           error: (error,_) => Text("Error, $error"),
-                          loading: () => CircularProgressIndicator(),
+                          loading: () => CircularProgressIndicator(color: Colors.white70,),
                       ),
                     ),
                   ),
@@ -208,7 +208,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                                   ),
                                 ),
                                 error: (error, _) => Text("Error, $error"),
-                                loading: () => CircularProgressIndicator(),
+                                loading: () => CircularProgressIndicator(color: Colors.white70,),
                             )
                           ],
                         ),
@@ -257,7 +257,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                                 ),
                               ),
                               error: (error, _) => Text("Error, $error"),
-                              loading: () => CircularProgressIndicator(),
+                              loading: () => CircularProgressIndicator(color: Colors.white70,),
                             )
                           ],
                         ),
@@ -302,7 +302,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                                 ),
                               ),
                               error: (error, _) => Text("Error, $error"),
-                              loading: () => CircularProgressIndicator(),
+                              loading: () => CircularProgressIndicator(color: Colors.white70,),
                             )
                           ],
                         ),
@@ -351,7 +351,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                                 ),
                               ),
                               error: (error, _) => Text("Error, $error"),
-                              loading: () => CircularProgressIndicator(),
+                              loading: () => CircularProgressIndicator(color: Colors.white70,),
                             )
                           ],
                         ),

@@ -21,24 +21,7 @@ class loginPage extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              padding: EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(25),
-                border: Border.all(
-                  color: Colors.black.withOpacity(0.3)
-                )
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image(
-                  image: AssetImage('lib/assets/images/logo.png'),
-                  width: 130,
-                ),
-              ),
-            ),
-            SizedBox(height: 50),
+
             Text(
               "HELLO AGAIN",
               style: GoogleFonts.belleza(
@@ -55,7 +38,7 @@ class loginPage extends ConsumerWidget {
                 fontSize: 17,
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 50),
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: inputContainer(
